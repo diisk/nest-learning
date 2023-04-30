@@ -7,6 +7,8 @@ import { AlternativeValidationPipe, ZodValidationPipe } from '../common/pipe/val
 import { RolesGuard } from '../common/guard/roles.guard';
 import { Roles } from '../common/decorator/roles.decorator';
 import { LoggingInterceptor } from '../common/interceptor/loggin.interceptor';
+import { User } from '../common/decorator/user.decorator';
+import { Auth } from '../common/decorator/auth.decorator';
 
 
 // //@Controller({ host: ':account.example.com' }) LIMITA A CONTROLLER PARA SER USADA APENAS NO HOST ESPECIFICO
@@ -25,11 +27,17 @@ export class CatsController {
 
 
     @Post()
-    @Roles('admin')
-    //@SetMetadata('roles', ['admin']) //Outra forma de setar roles, mas foi feito um decorator customizado pra isso
+    @Auth('admin')
     async create(@Body(new AlternativeValidationPipe()) createCatDto: CreateCatDto) {
         this.catsService.create(createCatDto);
     }
+
+    // @Post()
+    // @Roles('admin')
+    // //@SetMetadata('roles', ['admin']) //Outra forma de setar roles, mas foi feito um decorator customizado pra isso
+    // async create(@Body(new AlternativeValidationPipe()) createCatDto: CreateCatDto) {
+    //     this.catsService.create(createCatDto);
+    // }
 
     // @Post()
     // @UsePipes(new ZodValidationPipe(createCatSchema))
@@ -58,12 +66,19 @@ export class CatsController {
     // }
 
     @Get(':id')
-    async findOne(
-        @Param('id', new DefaultValuePipe(-1), new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }))
-        id: number,
-    ) {
-        return this.catsService.findOne(id);
+    async findOne(@User('Ohoi') user: unknown) {
+        return {user};
     }
+
+
+
+    // @Get(':id')
+    // async findOne(
+    //     @Param('id', new DefaultValuePipe(-1), new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }))
+    //     id: number,
+    // ) {
+    //     return this.catsService.findOne(id);
+    // }
 
 
     // @Get(':id')
