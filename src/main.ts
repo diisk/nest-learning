@@ -1,12 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
+import { LoggingInterceptor } from './common/interceptor/loggin.interceptor';
 import { ValidationPipe } from './common/pipe/validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  //app.useGlobalPipes(new ValidationPipe()); //Aplica validação em todos os handles
-  //app.useGlobalGuards(new RolesGuard()); //Aplica o Guard em todos os handles
+  //Aplica a global em todos os handles
+  //app.useGlobalPipes(new ValidationPipe());
+  //app.useGlobalGuards(new RolesGuard());
+  //app.useGlobalInterceptors(new LoggingInterceptor());
   await app.listen(3000);
 }
 bootstrap();

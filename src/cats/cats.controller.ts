@@ -1,4 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Get, HttpStatus, Param, ParseIntPipe, Post, Req, Res, SetMetadata, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, HttpStatus, Param, ParseIntPipe, Post, Req, Res, SetMetadata, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { Cat } from './interfaces/cat.interface';
 import { CatsService } from './cats.service';
@@ -6,6 +6,7 @@ import { CreateCatDto, createCatSchema } from './dto/create-cat.dto';
 import { AlternativeValidationPipe, ZodValidationPipe } from '../common/pipe/validation.pipe';
 import { RolesGuard } from '../common/guard/roles.guard';
 import { Roles } from '../common/decorator/roles.decorator';
+import { LoggingInterceptor } from '../common/interceptor/loggin.interceptor';
 
 
 // //@Controller({ host: ':account.example.com' }) LIMITA A CONTROLLER PARA SER USADA APENAS NO HOST ESPECIFICO
@@ -18,6 +19,7 @@ import { Roles } from '../common/decorator/roles.decorator';
 
 @Controller('cats')
 @UseGuards(RolesGuard)
+@UseInterceptors(LoggingInterceptor)
 export class CatsController {
     constructor(private catsService: CatsService) { }
 
