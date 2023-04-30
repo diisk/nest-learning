@@ -6,6 +6,7 @@ import { ValidationPipe } from './common/pipe/validation.pipe';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   //app.useGlobalPipes(new ValidationPipe()); //Aplica validação em todos os handles
+  //app.useGlobalGuards(new RolesGuard()); //Aplica o Guard em todos os handles
   await app.listen(3000);
 }
 bootstrap();

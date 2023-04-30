@@ -1,9 +1,11 @@
-import { Body, Controller, DefaultValuePipe, Get, HttpStatus, Param, ParseIntPipe, Post, Req, Res, UsePipes } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, HttpStatus, Param, ParseIntPipe, Post, Req, Res, SetMetadata, UseGuards, UsePipes } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { Cat } from './interfaces/cat.interface';
 import { CatsService } from './cats.service';
 import { CreateCatDto, createCatSchema } from './dto/create-cat.dto';
-import { AlternativeValidationPipe, ZodValidationPipe } from 'src/common/pipe/validation.pipe';
+import { AlternativeValidationPipe, ZodValidationPipe } from '../common/pipe/validation.pipe';
+import { RolesGuard } from '../common/guard/roles.guard';
+import { Roles } from '../common/decorator/roles.decorator';
 
 
 // //@Controller({ host: ':account.example.com' }) LIMITA A CONTROLLER PARA SER USADA APENAS NO HOST ESPECIFICO
@@ -15,11 +17,14 @@ import { AlternativeValidationPipe, ZodValidationPipe } from 'src/common/pipe/va
 // }
 
 @Controller('cats')
+@UseGuards(RolesGuard)
 export class CatsController {
     constructor(private catsService: CatsService) { }
 
 
     @Post()
+    @Roles('admin')
+    //@SetMetadata('roles', ['admin']) //Outra forma de setar roles, mas foi feito um decorator customizado pra isso
     async create(@Body(new AlternativeValidationPipe()) createCatDto: CreateCatDto) {
         this.catsService.create(createCatDto);
     }
