@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, HttpStatus, Param, ParseIntPipe, Post, Req, Res, UsePipes } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { Cat } from './interfaces/cat.interface';
 import { CatsService } from './cats.service';
-import { CreateCatDto } from './dto/create-cat.dto';
+import { CreateCatDto, createCatSchema } from './dto/create-cat.dto';
+import { AlternativeValidationPipe, ZodValidationPipe } from 'src/common/pipe/validation.pipe';
 
 
 // //@Controller({ host: ':account.example.com' }) LIMITA A CONTROLLER PARA SER USADA APENAS NO HOST ESPECIFICO
@@ -17,10 +18,22 @@ import { CreateCatDto } from './dto/create-cat.dto';
 export class CatsController {
     constructor(private catsService: CatsService) { }
 
+
     @Post()
-    async create(@Body() createCatDto: CreateCatDto) {
+    async create(@Body(new AlternativeValidationPipe()) createCatDto: CreateCatDto) {
         this.catsService.create(createCatDto);
     }
+
+    // @Post()
+    // @UsePipes(new ZodValidationPipe(createCatSchema))
+    // async create(@Body() createCatDto: CreateCatDto) {
+    //     this.catsService.create(createCatDto);
+    // }
+
+    // @Post()
+    // async create(@Body() createCatDto: CreateCatDto) {
+    //     this.catsService.create(createCatDto);
+    // }
 
     //A ORDEM DOS DECORATORS IMPORTA, ESSE PRIMEIRO GET TEM PRIORIDADE EM RELACAO AO SEGUNDO
 
@@ -38,9 +51,26 @@ export class CatsController {
     // }
 
     @Get(':id')
-    findOne(@Param('id') id: string): string {
-        return `This action returns a #${id} cat`;
+    async findOne(
+        @Param('id', new DefaultValuePipe(-1), new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }))
+        id: number,
+    ) {
+        return this.catsService.findOne(id);
     }
+
+
+    // @Get(':id')
+    // async findOne(
+    //     @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }))
+    //     id: number,
+    // ) {
+    //     return this.catsService.findOne(id);
+    // }
+
+    // @Get(':id')
+    // findOne(@Param('id', ParseIntPipe) id: number): string {//PIPE É UM TRANSFORMADOR E VALIDADOR, SE O DADO ENÃO FOR VALIDO ELE LANÇA UMA EXCEPTION
+    //     return `This action returns a #${id} cat`;
+    // }
     // @Get(':id')
     // findOne(@Param() params: any): string {
     //     console.log(params.id);

@@ -12,6 +12,10 @@ export class CatsService {
   findAll(): Cat[] {
     return this.cats;
   }
+
+  findOne(id:number){
+    return `retornando cat id:${id}`;
+  }
 }
 
 
