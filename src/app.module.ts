@@ -6,6 +6,7 @@ import { logger } from './common/middleware/logger.middleware';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './common/interceptor/loggin.interceptor';
 import { ConfigModule } from './config/config.module';
+import { HelloService } from './hello/hello.service';
 import DevelopmentConfigService from './common/service/development-config.service';
 import ProductionConfigService from './common/service/production-config.service';
 import ConfigService from './common/service/config.service';
@@ -32,6 +33,17 @@ const configFactory = {
 @Injectable()
 class LoggerService {
   //CLASSE DE EXEMPLO
+}
+
+@Injectable()
+export class AppService {
+  constructor(private helloService: HelloService) {}
+
+  getRoot(): string {
+    this.helloService.sayHello('My name is getRoot');
+
+    return 'Hello world!';
+  }
 }
 
 //USA UM PROVIDER JÁ EXISTENTE
@@ -104,7 +116,7 @@ const loggerAliasProvider = {
     //   useClass: ConfigModuleOptionsFactory,
     // }),
   ],
-  providers: [configServiceProvider, LoggerService, loggerAliasProvider],
+  providers: [configServiceProvider, LoggerService, loggerAliasProvider, HelloService],
   //Há varios tipos de providers que podem ser aplicados globalmente
   //Ex. Pipes, Guards, Interceptors, Exceptions
   //Da forma abaixo:

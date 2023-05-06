@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { truncate } from 'fs/promises';
 import { Cat } from './interfaces/cat.interface';
 
-@Injectable()
+@Injectable({scope:Scope.REQUEST, durable:truncate})
 export class CatsService {
   private readonly cats: Cat[] = [];
+
+
+  constructor(@Inject(REQUEST) private request:Request){}
 
   create(cat: Cat) {
     this.cats.push(cat);

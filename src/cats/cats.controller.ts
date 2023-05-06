@@ -1,4 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Get, HttpStatus, Param, ParseIntPipe, Post, Req, Res, SetMetadata, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, HttpStatus, Param, ParseIntPipe, Post, Req, Res, Scope, SetMetadata, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { Cat } from './interfaces/cat.interface';
 import { CatsService } from './cats.service';
@@ -19,7 +19,11 @@ import { Auth } from '../common/decorator/auth.decorator';
 //   }
 // }
 
-@Controller('cats')
+//@Controller('cats')
+@Controller({
+    path:'cats',
+    scope:Scope.REQUEST
+})
 @UseGuards(RolesGuard)
 @UseInterceptors(LoggingInterceptor)
 export class CatsController {
