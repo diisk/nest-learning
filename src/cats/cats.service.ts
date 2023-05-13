@@ -3,7 +3,7 @@ import { REQUEST } from '@nestjs/core';
 import { truncate } from 'fs/promises';
 import { Cat } from './interfaces/cat.interface';
 
-@Injectable({scope:Scope.REQUEST, durable:truncate})
+@Injectable({scope:Scope.REQUEST, durable:true})
 export class CatsService {
   private readonly cats: Cat[] = [];
 
