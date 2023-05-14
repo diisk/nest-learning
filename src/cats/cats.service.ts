@@ -1,20 +1,19 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { truncate } from 'fs/promises';
-import { Cat } from './interfaces/cat.interface';
 
 @Injectable({scope:Scope.REQUEST, durable:true})
 export class CatsService {
-  private readonly cats: Cat[] = [];
+  private readonly cats: string[] = [];
 
 
-  constructor(@Inject(REQUEST) private request:Request){}
+  constructor(){}
 
-  create(cat: Cat) {
+  create(cat:string) {
     this.cats.push(cat);
   }
 
-  findAll(): Cat[] {
+  findAll(): string[] {
     return this.cats;
   }
 
